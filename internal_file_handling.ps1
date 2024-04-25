@@ -1,6 +1,6 @@
 # Set file directory 
 $dataDir =      '\\network\Team\MT\Company\CampaignMain'
-$scriptDir = 	'\\network\Team\MT\Company\CampaignMain\Scripts'
+# $scriptDir = 	'\\network\Team\MT\Company\CampaignMain\Scripts'
 
 # Set file destination folders  
 $outreach1Dir = 	'\\network\Team\MT\Company\CampaignMain\Campaign1'  
@@ -25,7 +25,7 @@ foreach ($file in $files){
 
 			# Create new filename with .csv extension
 			$newFilename += ".csv"
-			$newFilePath = Join-Path -Path (Get-Location) -ChildPath $newFilename
+			$newFilePath = Join-Path -Path $dataDir -ChildPath $newFilename
 			
 			# Establish oldFilePath to original file
 			$oldFilePath = Join-Path -Path $outreach1Dir -ChildPath $file.name
@@ -36,7 +36,7 @@ foreach ($file in $files){
 
 						# Create new filename with .csv extension
 			$newFilename += ".csv"
-			$newFilePath = Join-Path -Path (Get-Location) -ChildPath $newFilename
+			$newFilePath = Join-Path -Path $dataDir -ChildPath $newFilename
 			
 			# Establish oldFilePath to original file
 			$oldFilePath = Join-Path -Path $outreach2Dir -ChildPath $file.name
@@ -47,7 +47,7 @@ foreach ($file in $files){
 			
 			# Create new filename with .csv extension
 			$newFilename += ".csv"
-			$newFilePath = Join-Path -Path (Get-Location) -ChildPath $newFilename
+			$newFilePath = Join-Path -Path $dataDir -ChildPath $newFilename
 			
 			# Establish oldFilePath to original file
 			$oldFilePath = Join-Path -Path $outreach3Dir -ChildPath $file.name
