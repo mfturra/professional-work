@@ -4,6 +4,7 @@
 // const port = 3000;
 // const { client } = require('pg');
 const { Pool } = require('pg');
+const exceljs = require('exceljs');
 require('dotenv').config(); // Load environment variables from .env file
 
 // configure connection
@@ -14,6 +15,38 @@ const pool = new Pool({
     password: process.env.DB_PASSWORD,
     port: process.env.DB_PORT,
 })
+
+// Read Excel data and insert into database
+async function importExcelData(filename, sheetname) {
+    const workbook = new exceljs.Workbook();
+    await workbook.xlsx.readFile(filename);
+
+    const worksheet = workbook.getWorksheet(sheetname);
+    const client = await pool.connect();
+
+    try {
+        await client.query('BEGIN');
+        worksheet.eachRow({ includeEmpty: false }, async (row, rowNumber) => {
+            if (rowNumber > 14) { // skip header roww
+                const values = row.values.slice(1); // skip first column assuming it contains an ID
+                const query = {
+                    text: `INSERT INTO practice_table (Jan, Feb, Mar, Apr, May, Jun, Jul, Aug, Sep, Oct, Nov, Dec)
+                            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)`,
+                    values: values,
+                };
+                await client.query(query);
+            }
+        });
+        await client.query('COMMIT');
+        console.log('Data imported successfully.');
+    } catch (error) {
+        await client.query('ROLLBACK');
+        console.error('Error importing data:', error)
+    } finally {
+        client.release();
+    }
+
+}
 
 // Create a new database
 async function setupDatabase(databaseName) {
@@ -42,8 +75,42 @@ async function dropDatabase(databaseName) {
     }
 }
 
-// setupDatabase('BIG_BUILD');
-dropDatabase('$(databaseName)');
+// Create a new table in a specific database
+async function createTable(tableName, columns) {
+    const client = await pool.connect();
+    try {
+        const columnDefs = columns.map(column => `"${column.name}" ${column.type}`).join(', ');
+        const queryString = `CREATE TABLE IF NOT EXISTS "${tableName}" (${columnDefs})`;
+        await client.query(queryString);
+        console.log(`Table "${tableName} created successfully.`);
+    } catch (error) {
+        console.error('Error creating table:', error);
+    } finally {
+        client.release();
+    }
+}
+
+const columns = [
+    { name: 'jan', type: 'INTEGER' },
+    { name: 'feb', type: 'INTEGER' },
+    { name: 'mar', type: 'INTEGER' },
+    { name: 'apr', type: 'INTEGER' },
+    { name: 'may', type: 'INTEGER' },
+    { name: 'jun', type: 'INTEGER' },
+    { name: 'jul', type: 'INTEGER' },
+    { name: 'aug', type: 'INTEGER' },
+    { name: 'sep', type: 'INTEGER' },
+    { name: 'oct', type: 'INTEGER' },
+    { name: 'nov', type: 'INTEGER' },
+    { name: 'dec', type: 'INTEGER' },
+]
+
+// Utilization of functions
+// createTable('practice_table', columns);
+
+importExcelData('SeriesReport.xlsx', 'BLS Data Series');
+// setupDatabase('practice_db_connection_test');
+// dropDatabase('flights');
 
 // await client.connect();
 
