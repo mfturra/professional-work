@@ -1,7 +1,10 @@
 // database credentials
-const { createServer } = require('node:http');
+const { createServer } = require('http');
 const { Pool } = require('pg');
 const exceljs = require('exceljs');
+const fs = require('fs')
+
+// const { table } = require('node:console');
 require('dotenv').config(); // Load environment variables from .env file
 
 // configure connection
@@ -20,22 +23,25 @@ const port = 3000;
 // new request made, request event is triggered, causing request and response object
 const server = createServer(async (req, res) => {
     res.statusCode = 200;
-    res.setHeader('Content-Type', 'application.json');
+    res.setHeader('Content-Type', 'text/html');
 
     try {
+        // connect to database and store table values in variables
         const client = await pool.connect();
         const result = await client.query(`SELECT * FROM practice_table`);
         const rows = result.rows;
 
-        let html = '<!DOCTYPE html><html><head><title>Data Table</title></head><body>';
-        html += '<h1>Data Table</h1>';
-        html += '<table border="1"><tr><th>Jan</th><th>Feb</th><th>Mar</th><th>Apr</th><th>May</th><th>Jun</th><th>Jul</th><th>Aug</th><th>Sep</th><th>Oct</th><th>Nov</th><th>Dec</th><th>Year</th></tr>';
+        // read html file
+        const htmlTemplate = fs.readFileSync('index.html', 'utf8');
 
+        let tableRows = '';
         rows.forEach(row => {
-            html += `<tr><td>${row.jan}</td><td>${row.feb}</td><td>${row.mar}</td><td>${row.apr}</td><td>${row.may}</td><td>${row.jun}</td><td>${row.jul}</td><td>${row.aug}</td><td>${row.sep}</td><td>${row.oct}</td><td>${row.nov}</td><td>${row.dec}</td><td>${row.year}</td></tr>`;
+            tableRows += `<tr><td>${row.jan}</td><td>${row.feb}</td><td>${row.mar}</td><td>${row.apr}</td><td>${row.may}</td><td>${row.jun}</td><td>${row.jul}</td><td>${row.aug}</td><td>${row.sep}</td><td>${row.oct}</td><td>${row.nov}</td><td>${row.dec}</td><td>${row.year}</td></tr>`;
         });
 
-        html += '</table></body></html>';
+        // replace comment section in HTML file with data from database
+        const html = htmlTemplate.replace('<!-- Table data will be injected here -->', tableRows);
+        // const html = htmlTemplate.replace('<!-- Table data to be injected here -->', tableRows);
 
         res.end(html);
         client.release();

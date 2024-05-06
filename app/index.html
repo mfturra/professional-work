@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+
+<link rel="stylesheet" href="/app/styling.css">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+    .table-title {
+        margin-top: 200px;
+        text-align: center;
+    }
+
+
+    .content-table {
+        border-collapse: collapse;
+        margin: 25px 0;
+        font-size: 0.9em;
+        min-width: 400px;
+        border-radius: 5px;
+        overflow: hidden;
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .content-table thead tr {
+        background-color: #009879;
+        color: #ffffff;
+        text-align: left;
+        font-weight: bold;
+    }
+
+    .content-table th,
+    .content-table td {
+        padding: 12px 15px;
+    }
+
+    .content-table tbody tr {
+        border-bottom: thin solid #dddddd;
+    }
+
+    .content-table tbody tr:nth-of-type(even) {
+        background-color: #f3f3f3;
+    }
+
+    .content-table tbody tr:last-of-type {
+        border-bottom: 2px solid #009879;
+    }
+</style>
+
+
+<head>
+    <title>Practice Data Table</title>
+</head>
+
+<body>
+    <h1 class="table-title">Data Table</h1>
+    <table class="content-table">
+        <thead>
+            <tr>
+                <th>Jan</th>
+                <th>Feb</th>
+                <th>Mar</th>
+                <th>Apr</th>
+                <th>May</th>
+                <th>Jun</th>
+                <th>Jul</th>
+                <th>Aug</th>
+                <th>Sep</th>
+                <th>Oct</th>
+                <th>Nov</th>
+                <th>Dec</th>
+                <th>Year</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Table data will be injected here -->
+        </tbody>
+    </table>
+</body>
+
+</html>
