@@ -1,8 +1,5 @@
 // database credentials
-// const { createServer } = require('node:http');
-// const hostname = '127.0.0.1';
-// const port = 3000;
-// const { client } = require('pg');
+const { createServer } = require('node:http');
 const { Pool } = require('pg');
 const exceljs = require('exceljs');
 require('dotenv').config(); // Load environment variables from .env file
@@ -15,6 +12,41 @@ const pool = new Pool({
     password: process.env.DB_PASSWORD,
     port: process.env.DB_PORT,
 })
+
+// configure server
+const hostname = '127.0.0.1';
+const port = 3000;
+
+// new request made, request event is triggered, causing request and response object
+const server = createServer(async (req, res) => {
+    res.statusCode = 200;
+    res.setHeader('Content-Type', 'application.json');
+
+    try {
+        const client = await pool.connect();
+        const result = await client.query(`SELECT * FROM practice_table`);
+        const rows = result.rows;
+
+        let html = '<!DOCTYPE html><html><head><title>Data Table</title></head><body>';
+        html += '<h1>Data Table</h1>';
+        html += '<table border="1"><tr><th>Jan</th><th>Feb</th><th>Mar</th><th>Apr</th><th>May</th><th>Jun</th><th>Jul</th><th>Aug</th><th>Sep</th><th>Oct</th><th>Nov</th><th>Dec</th><th>Year</th></tr>';
+
+        rows.forEach(row => {
+            html += `<tr><td>${row.jan}</td><td>${row.feb}</td><td>${row.mar}</td><td>${row.apr}</td><td>${row.may}</td><td>${row.jun}</td><td>${row.jul}</td><td>${row.aug}</td><td>${row.sep}</td><td>${row.oct}</td><td>${row.nov}</td><td>${row.dec}</td><td>${row.year}</td></tr>`;
+        });
+
+        html += '</table></body></html>';
+
+        res.end(html);
+        client.release();
+    } catch (error) {
+        res.statusCode = 500;
+        res.end(JSON.stringify({ error: 'Internal server error' }));
+        console.error('Error retrieving data:', error);
+    }
+});
+
+
 
 // Read Excel data and insert into database
 async function importExcelData(filename, sheetname) {
@@ -142,22 +174,12 @@ const columns = [
 // Utilization of functions
 // createTable('practice_table', columns);
 // addColumnToTable('year', 'NUMERIC')
-
-importExcelData('SeriesReport.xlsx', 'BLS Data Series');
+// importExcelData('SeriesReport.xlsx', 'BLS Data Series');
 // setupDatabase('practice_db_connection_test');
 // dropDatabase('flights');
 
-// await client.connect();
-
-// new request made, request event is triggered, causing request and response object
-// const server = createServer((req, res) => {
-//     res.statusCode = 200;
-//     res.setHeader('Content-Type', 'text/plain');
-//     res.end('Connection has been established!');
-// });
-
 // listen for server req and run code above when request takes place
-// server.listen(port, hostname, () => {
-//     // output specific message once server is connected
-//     console.log('Server running at http://${hostname}:${port}/');
-// });
+server.listen(port, hostname, () => {
+    // output specific message once server is connected
+    console.log(`Server running at http://${hostname}:${port}/`);
+});
