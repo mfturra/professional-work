@@ -7,21 +7,131 @@
     <title>Login</title>
 </head>
 
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    .wrapper {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 80vh;
+        text-align: center;
+    }
+
+    .login-box {
+        position: relative;
+        width: 450px;
+        border: thin solid #dddddd;
+        background-color: aliceblue;
+        /*#ffffff;*/
+        padding: 3.5em 2.5em 4em 2.5em;
+        border-radius: 5px;
+        /* overflow: hidden; */
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    .login-header {
+        position: absolute;
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        /* background-color: rgb(198, 226, 250); */
+        padding: 5em 0.5em 1em 0.5em;
+        margin-top: 20px;
+        font-size: x-large;
+    }
+
+    .input-box {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        margin: 10px 0;
+        width: 100%;
+        /* display: flex;
+        justify-content: center;
+        align-items: center; */
+    }
+
+    .input-field {
+        width: 100%;
+        height: 55px;
+        font-size: 16px;
+        /* background-color: #ffffff; */
+        background-color: #f3f3f3;
+        border: thin solid #beb5b5;
+        margin-top: 10px;
+        border-radius: 8px;
+        text-align: center;
+    }
+
+    #username {
+        margin-bottom: 10px;
+    }
+
+    #password {
+        margin-bottom: 30px;
+    }
+
+    .label {
+        position: absolute;
+        top: 30px;
+        left: 20px;
+        transition: .2s;
+    }
+
+    .input-field:focus~.label,
+    .input-field:valid~.label {
+        position: absolute;
+        top: -10px;
+        left: 20px;
+        font-size: 14px;
+    }
+
+    .input-submit {
+        margin-top: 15px;
+        position: absolute;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 25%;
+        height: 50px;
+        background-color: #f3f3f3;
+        border: thin solid #beb5b5;
+        border-radius: 8px;
+        /* border: #03201b; */
+    }
+</style>
+
 <body>
-    <h2>Login</h2>
-    <form action="/login" method="post">
-        <div>
-            <label for="username">Username:</label>
-            <input type="text" id="username" name="username" required>
+    <div class="wrapper">
+        <div class="login-header">
+            <span>Data Processing Form</span>
         </div>
-        <div>
-            <label for="password">Password:</label>
-            <input type="password" id="password" name="password" required>
+        <div class="login-box">
+            <form action="/login" method="post">
+                <div class="input-box">
+                    <label for="username" class="label">Username</label>
+                    <input type="text" id="username" name="username" class="input-field" required>
+                    <!-- placeholder="Username" -->
+                </div>
+                <div class="input-box">
+                    <label for="password" class="label">Password</label>
+                    <input type="password" id="password" name="password" class="input-field" required>
+                </div>
+                <div class="input-box">
+                    <button type="submit" class="input-submit" value="Login">Login</button>
+                </div>
+            </form>
         </div>
-        <div>
-            <button type="submit">Login</button>
-        </div>
-    </form>
+    </div>
+
 </body>
 
 </html>
