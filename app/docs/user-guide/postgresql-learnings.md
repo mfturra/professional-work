@@ -1,16 +1,17 @@
-Whenever access to the root users password is lost you'll need to stop the PostgreSQL server first. 
+## Recovering Root Access to PostgreSQL DB
+1. Whenever access to the root users password is lost, first stop the PostgreSQL server. 
+2. Next, if you're using a Windows laptop, type `psql` in the Windows search bar to bring up the postgresql login. 
 
-Next, if you're using a Windows laptop, type psql in the Windows search bar to bring up the postgresql login. Create a user that has the ability to create databases using the following code:
-CREATE USER mt1070 WITH PASSWORD 'password' CREATEDB;
-'SeCrity2024'
+## Creating New User
+1. Create a user that has the ability to create databases using the following code: `CREATE USER userid WITH PASSWORD 'password' CREATEDB;`
+    - Drop the `CREATEDB` property from script in step 1 if the user that's being created should not have the ability to create a new database.
+2. Switch to the respective user by first exiting the psql shell using the following command in the command line prompt: `\q`
+3. Type `psql` in the Windows search bar.
+4. When prompted, enter your username and password. After entering your credentials, the terminal command line will change to `postgres=>`.
 
-Switch to said user by first exiting the psql shell using the following command: \q
-Follow step 1 again and login to the postgreSQL shell by typing in your username and password at the appropriate time. Even though nothing changes you'll be 'signed in' with the appropriate user credentials. 
-
-Considering the fact that many node dependencies (i.e. packages) are being installed for this project, it's preferable that it's not re-downloaded each time. To avoid doing that, you'll need to create a package.json file. This is the main file for the Node.js application, housing all the projects metadata. This includes the project name, description, scripts, and the dependencies of the project. 
-
-To do this in a practical way, using the command line tool, change the directory to the projects folder. While there type the following to initialize the new package.json file: npm init -y
-    - The -y flag will answer 'yes' to all prompts and produce a standard package.json file. 
-To proactively add these dependencies to your current workflow and save them at the same time use the following script: npm install express pg dotenv --save. 
-    - Using this script will proactively automatically update your package.json file. 
-Whenever a new user downloads the folder in the future, all they would need to do is run npm install and it'll install all the correct versions of everything listed in the dependencies section. 
+## SQL Shortcuts
+List all the available databases in the sql server: `\l`
+Connect to specific database: `\connect databasename`
+List all tables available inside the database: `\dt`
+Select all content contained inside a specific table: `SELECT * FROM tablename;`
+Add column to table: `ALTER TABLE tablename ADD COLUMN columnname columntype;`
