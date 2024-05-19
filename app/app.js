@@ -5,10 +5,9 @@ const session = require('express-session');
 const bcrypt = require('bcrypt');
 
 // database req libraries
-// const { createServer } = require('http');
 const { Pool } = require('pg');
-const exceljs = require('exceljs');
-const fs = require('fs')
+// const exceljs = require('exceljs');
+// const fs = require('fs')
 require('dotenv').config();
 
 const app = express();
@@ -116,28 +115,6 @@ app.listen(port, () => {
 
 
 
-
-const columns = [
-    { name: 'jan', type: 'INTEGER' },
-    { name: 'feb', type: 'INTEGER' },
-    { name: 'mar', type: 'INTEGER' },
-    { name: 'apr', type: 'INTEGER' },
-    { name: 'may', type: 'INTEGER' },
-    { name: 'jun', type: 'INTEGER' },
-    { name: 'jul', type: 'INTEGER' },
-    { name: 'aug', type: 'INTEGER' },
-    { name: 'sep', type: 'INTEGER' },
-    { name: 'oct', type: 'INTEGER' },
-    { name: 'nov', type: 'INTEGER' },
-    { name: 'dec', type: 'INTEGER' },
-]
-
-// Utilization of functions
-// createTable('practice_table', columns);
-// addColumnToTable('year', 'NUMERIC')
-// importExcelData('SeriesReport.xlsx', 'BLS Data Series');
-// setupDatabase('practice_db_connection_test');
-// dropDatabase('flights');
 
 
 
