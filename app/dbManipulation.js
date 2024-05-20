@@ -2,11 +2,8 @@ const { Pool } = require('pg');
 const express = require('express');
 const bodyParser = require('body-parser');
 const DatabaseManager = require('./databaseManager');
-// const fs = require('fs')
 require('dotenv').config();
 
-
-// configure connection to database
 const pool = new Pool({
     user: process.env.DB_USER,
     host: process.env.DB_HOST,
@@ -15,9 +12,11 @@ const pool = new Pool({
     port: process.env.DB_PORT,
 })
 
-// const hostname = '127.0.0.1';
-// const port = 3000;
+// Instantiate the DatabaseManager 
+const databaseManager = new DatabaseManager(pool);
 
+const app = express();
+app.use(bodyParser.json());
 
 const columns = [
     { name: 'jan', type: 'INTEGER' },
@@ -45,25 +44,57 @@ const users = [
     { username: 'revalator', password: 'pass7', email: 'revalator@example.com', name: 'Renee Valator' }
 ];
 
-// Instantiate the DatabaseManager and connect workflow to database
-const databaseManager = new DatabaseManager(pool);
+// Example route  
+app.get('/', (req, res) => {  
+    res.send('Hello World!');  
+});
+
+
+app.post('/create-table', async (req, res) => {
+    try {
+        await databaseManager.createTable('practice_table', columns);
+        res.send('Table created successfully');
+    } catch (error) {
+        res.status(500).send('Error creating table');
+    }
+});
+
+app.post('/import-data', async (req,res) => {
+    try {
+        await databaseManager.importExcelData('data.xlsx', 'Sheet1');
+        res.send('Data imported successfully');
+    } catch (error) {
+        res.status(500).send('Error importing data');
+    }
+});
+
+app.post('/update-users', async (req, res) => {
+    try {
+        await databaseManager.updateUsersTable(users);
+        res.send('Users added successfully');
+    } catch (error) {
+        res.status(500).send('Error adding users');
+    }
+});
+
+pool.connect((err) => {
+    if (err) { 
+        console.error('Connection error', err.stack);
+    } else {
+        console.log('Connected to the database!');
+    }
+})
+
+
+// Start server
+const port = process.env.PORT || 3000;  
+app.listen(port, () => {  
+    console.log(`Server running at http://localhost:${port}/`);  
+});  
 
 // Utilization of functions
-(async () => {
-    // Create a new table
-    await databaseManager.createTable('practice_table', columns);
-
-    // Import Excel data
-    await databaseManager.importExcelData('data.xlsx', 'Sheet1');
-
-    // Create users table
-    await databaseManager.createUsersTable();
-
-    // Update users table
-    await databaseManager.updateUsersTable(users);
-
-    // Example usage of other methods
-    // await databaseManager.setupDatabase('new_database');
-    // await databaseManager.dropDatabase('old_database');
-    // await databaseManager.addColumnToTable('new_column', 'VARCHAR(255)');
-})();
+// createTable('practice_table', columns);
+// addColumnToTable('year', 'NUMERIC')
+// importExcelData('SeriesReport.xlsx', 'BLS Data Series');
+// setupDatabase('practice_db_connection_test');
+// dropDatabase('flights');

@@ -7,6 +7,117 @@ class DatabaseManager {
         this.exceljs = exceljs;
     }
 
+    
+    /// Database Manipulation methods
+    // Create a new database
+    async setupDatabase(databaseName) {
+        const client = await this.pool.connect();
+        try {
+            await client.query(`CREATE DATABASE ${databaseName}`);
+            console.log(`Database "${databaseName}" created successfully.`);
+        } catch (error) {
+            console.error('Error creating database:', error);
+        } finally {
+            client.release();
+        }
+    }
+
+    // Drop a database
+    async dropDatabase(databaseName) {
+        const client = await this.pool.connect();
+        try {
+            const queryString = `DROP DATABASE IF EXISTS "${databaseName}"`;
+            await client.query(queryString);
+            console.log(`Database "${databaseName}" dropped successfully.`);
+        } catch (error) {
+            console.error('Error dropping database:', error);
+        } finally {
+            client.release();
+        }
+    }
+
+    /// Table manipulation methods
+    // Create a new table in a specific database
+    async createTable(tableName, columns) {
+        const client = await this.pool.connect();
+        try {
+            const columnDefs = columns.map(column => `"${column.name}" ${column.type}`).join(', ');
+            const queryString = `CREATE TABLE IF NOT EXISTS "${tableName}" (${columnDefs})`;
+            await client.query(queryString);
+            console.log(`Table "${tableName} created successfully.`);
+        } catch (error) {
+            console.error('Error creating table:', error);
+        } finally {
+            client.release();
+        }
+    }
+
+    // Update table by adding a column
+    async addColumnToTable(columnName, columnType) {
+        const client = await this.pool.connect();
+        try {
+            const queryString = `ALTER TABLE practice_table ADD COLUMN "${columnName}" "${columnType}"`;
+            await client.query(queryString);
+            console.log('Column "${columnName}" was added successfully.');
+        } catch (error) {
+            console.error('Error adding column to table:', error);
+        } finally {
+            client.release();
+        }
+    }
+
+    /// User manipulation methods
+    // Create users table, if not existent
+    async createUsersTable() {
+        const client = await pool.connect();
+        try {
+            await client.query(
+                `CREATE TABLE IF NOT EXISTS users (
+                    id SERIAL PRIMARY KEY,
+                    username VARCHAR(255) UNIQUE NOT NULL,
+                    password VARCHAR(255) NOT NULL,
+                    email VARCHAR(255) UNIQUE NOT NULL,
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                )`);
+            console.log('Users table created successfully.');
+        } catch (error) {
+            console.error('Error creating users table:', error);
+        } finally {
+            client.release();
+        }
+    }
+
+    // Update users table, if it exists
+    async updateUsersTable(users) {
+        const client = await pool.connect();
+        try {
+            await client.query('BEGIN');
+
+            for (const user of users) {
+                const { username, password, email, name } = user;
+                const query = {
+                    text: `
+                        INSERT INTO users (username, password, email, name)
+                        VALUES ($1, $2, $3, $4)
+                        ON CONFLICT (username) DO NOTHING
+                    `,
+                    values: [username, password, email, name],
+                };
+                await client.query(query);
+            }
+
+            await client.query('COMMIT');
+            console.log('Users added successfully.');
+        } catch (error) {
+            await client.query('ROLLBACK');
+            console.error('Error adding users:', error);
+        } finally {
+            client.release();
+        }
+    }
+
+    /// Excel data ingestion method 
     // Read Excel data and insert into database
     async importExcelData(filename, sheetname) {
         const workbook = new this.exceljs.Workbook();
@@ -42,11 +153,6 @@ class DatabaseManager {
                     };
                     await client.query(query);
                 };
-                // rowCount++;
-
-                // if (rowCount >= 22) {   // Stop after 9th row
-                //     return false;       // Stop iterating through rows
-                // }
             });
             await client.query('COMMIT');
             console.log('Data imported successfully.');
@@ -57,62 +163,6 @@ class DatabaseManager {
             client.release();
         }
 
-    }
-
-    // Create a new database
-    async setupDatabase(databaseName) {
-        const client = await this.pool.connect();
-        try {
-            await client.query(`CREATE DATABASE ${databaseName}`);
-            console.log(`Database "${databaseName}" created successfully.`);
-        } catch (error) {
-            console.error('Error creating database:', error);
-        } finally {
-            client.release();
-        }
-    }
-
-    // Drop a database
-    async dropDatabase(databaseName) {
-        const client = await this.pool.connect();
-        try {
-            const queryString = `DROP DATABASE IF EXISTS "${databaseName}"`;
-            await client.query(queryString);
-            console.log(`Database "${databaseName}" dropped successfully.`);
-        } catch (error) {
-            console.error('Error dropping database:', error);
-        } finally {
-            client.release();
-        }
-    }
-
-    // Create a new table in a specific database
-    async createTable(tableName, columns) {
-        const client = await this.pool.connect();
-        try {
-            const columnDefs = columns.map(column => `"${column.name}" ${column.type}`).join(', ');
-            const queryString = `CREATE TABLE IF NOT EXISTS "${tableName}" (${columnDefs})`;
-            await client.query(queryString);
-            console.log(`Table "${tableName} created successfully.`);
-        } catch (error) {
-            console.error('Error creating table:', error);
-        } finally {
-            client.release();
-        }
-    }
-
-    // Update table by adding a column
-    async addColumnToTable(columnName, columnType) {
-        const client = await this.pool.connect();
-        try {
-            const queryString = `ALTER TABLE practice_table ADD COLUMN "${columnName}" "${columnType}"`;
-            await client.query(queryString);
-            console.log('Column "${columnName}" was added successfully.');
-        } catch (error) {
-            console.error('Error adding column to table:', error);
-        } finally {
-            client.release();
-        }
     }
 }
 
@@ -170,110 +220,3 @@ module.exports = DatabaseManager;
 //     }
 
 // }
-
-// // Create a new database
-// async function setupDatabase(databaseName) {
-//     const client = await pool.connect();
-//     try {
-//         await client.query(`CREATE DATABASE ${databaseName}`);
-//         console.log(`Database "${databaseName}" created successfully.`);
-//     } catch (error) {
-//         console.error('Error creating database:', error);
-//     } finally {
-//         client.release();
-//     }
-// }
-
-// // Drop a database
-// async function dropDatabase(databaseName) {
-//     const client = await pool.connect();
-//     try {
-//         const queryString = `DROP DATABASE IF EXISTS "${databaseName}"`;
-//         await client.query(queryString);
-//         console.log(`Database "${databaseName}" dropped successfully.`);
-//     } catch (error) {
-//         console.error('Error dropping database:', error);
-//     } finally {
-//         client.release();
-//     }
-// }
-
-// // Create a new table in a specific database
-// async function createTable(tableName, columns) {
-//     const client = await pool.connect();
-//     try {
-//         const columnDefs = columns.map(column => `"${column.name}" ${column.type}`).join(', ');
-//         const queryString = `CREATE TABLE IF NOT EXISTS "${tableName}" (${columnDefs})`;
-//         await client.query(queryString);
-//         console.log(`Table "${tableName} created successfully.`);
-//     } catch (error) {
-//         console.error('Error creating table:', error);
-//     } finally {
-//         client.release();
-//     }
-// }
-
-// // Update table by adding a column
-// async function addColumnToTable(columnName, columnType) {
-//     const client = await pool.connect();
-//     try {
-//         const queryString = `ALTER TABLE practice_table ADD COLUMN "${columnName}" "${columnType}"`;
-//         await client.query(queryString);
-//         console.log('Column "${columnName}" was added successfully.');
-//     } catch (error) {
-//         console.error('Error adding column to table:', error);
-//     } finally {
-//         client.release();
-//     }
-// }
-
-// async function createUsersTable() {
-//     const client = await pool.connect();
-//     try {
-//         await client.query(
-//             `CREATE TABLE IF NOT EXISTS users (
-//                 id SERIAL PRIMARY KEY,
-//                 username VARCHAR(255) UNIQUE NOT NULL,
-//                 password VARCHAR(255) NOT NULL,
-//                 email VARCHAR(255) UNIQUE NOT NULL,
-//                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-//                 updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-//             )`);
-//         console.log('Users table created successfully.');
-//     } catch (errro) {
-//         console.error('Error creating users table:', error);
-//     } finally {
-//         client.release();
-//     }
-// }
-
-// async function updateUsersTable(users) {
-//     const client = await pool.connect();
-//     try {
-//         await client.query('BEGIN');
-
-//         for (const user of users) {
-//             const { username, password, email, name } = user;
-//             const query = {
-//                 text: `
-//                     INSERT INTO users (username, password, email, name)
-//                     VALUES ($1, $2, $3, $4)
-//                     ON CONFLICT (username) DO NOTHING
-//                 `,
-//                 values: [username, password, email, name],
-//             };
-//             await client.query(query);
-//         }
-
-//         await client.query('COMMIT');
-//         console.log('Users added successfully.');
-//     } catch (error) {
-//         await client.query('ROLLBACK');
-//         console.error('Error adding users:', error);
-//     } finally {
-//         client.release();
-//     }
-// }
-
-// const databaseManager = new DatabaseManager(pool, exceljs);
-// databaseManager.importExcelData("data.xlsx", "Sheet1")
