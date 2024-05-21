@@ -77,6 +77,7 @@ app.post('/update-users', async (req, res) => {
     }
 });
 
+
 pool.connect((err) => {
     if (err) { 
         console.error('Connection error', err.stack);

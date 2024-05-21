@@ -1,10 +1,11 @@
-const exceljs = require('exceljs');
+const ExcelJS = require('exceljs');
+const bcrypt = require('bcrypt');
 
 class DatabaseManager {
     // class constructor with dependencies
-    constructor(pool, exceljs) {
+    constructor(pool, ExcelJS) {
         this.pool = pool;
-        this.exceljs = exceljs;
+        this.exceljs = ExcelJS;
     }
 
     
@@ -56,7 +57,7 @@ class DatabaseManager {
     async addColumnToTable(columnName, columnType) {
         const client = await this.pool.connect();
         try {
-            const queryString = `ALTER TABLE practice_table ADD COLUMN "${columnName}" "${columnType}"`;
+            const queryString = `ALTER TABLE practice_table ADD COLUMN "${columnName}" ${columnType}`;
             await client.query(queryString);
             console.log('Column "${columnName}" was added successfully.');
         } catch (error) {
@@ -69,7 +70,7 @@ class DatabaseManager {
     /// User manipulation methods
     // Create users table, if not existent
     async createUsersTable() {
-        const client = await pool.connect();
+        const client = await this.pool.connect();
         try {
             await client.query(
                 `CREATE TABLE IF NOT EXISTS users (
@@ -77,6 +78,7 @@ class DatabaseManager {
                     username VARCHAR(255) UNIQUE NOT NULL,
                     password VARCHAR(255) NOT NULL,
                     email VARCHAR(255) UNIQUE NOT NULL,
+                    name VARCHAR(255) NOT NULL,
                     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                 )`);
@@ -90,7 +92,7 @@ class DatabaseManager {
 
     // Update users table, if it exists
     async updateUsersTable(users) {
-        const client = await pool.connect();
+        const client = await this.pool.connect();
         try {
             await client.query('BEGIN');
 
@@ -116,6 +118,37 @@ class DatabaseManager {
             client.release();
         }
     }
+
+    async fetchAndHashAndUpdateUserPassword() {
+        const client = await this.pool.connect();
+        try {
+            await client.query('BEGIN');
+
+            // Fetch all users
+            const result = await client.query('SELECT username, password FROM users');
+            const users = result.rows;
+
+            // Iterate over each user and hash their password
+            for (const user of users) {
+                const hashedPassword = await bcrypt.hash(user.password, 10);
+                const query = {
+                    text: 'UPDATE users SET password = $1 WHERE username = $2',
+                    values: [hashedPassword, user.username],
+                };
+                await client.query(query);
+                console.log(`Updated password for user: ${user.username}`);
+            }
+
+            await client.query('COMMIT');
+            console.log('All passwords have been updated.');
+        } catch (error) {
+            await client.query('ROLLBACK');
+            console.error('Error updating passwords:', error);
+        } finally {
+            client.release();
+        }
+    }
+
 
     /// Excel data ingestion method 
     // Read Excel data and insert into database

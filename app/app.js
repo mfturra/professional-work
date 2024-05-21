@@ -6,8 +6,7 @@ const bcrypt = require('bcrypt');
 
 // database req libraries
 const { Pool } = require('pg');
-// const exceljs = require('exceljs');
-// const fs = require('fs')
+const fs = require('fs')
 require('dotenv').config();
 
 const app = express();
@@ -39,7 +38,7 @@ app.get('/', (req, res) => {
     res.redirect('/login');
 })
 
-app.get('/', (req, res) => {
+app.get('/login', (req, res) => {
     res.sendFile(__dirname + '/login.html');
 });
 
@@ -103,9 +102,6 @@ app.listen(port, () => {
     console.log(`Server running at http://localhost:${port}/`);
 });
 
-// app.listen(port, () => {
-//     console.log(`Server running at `)
-// })
 
 
 

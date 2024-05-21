@@ -1,5 +1,6 @@
 const { Pool } = require('pg');
 const express = require('express');
+const ExcelJS = require('exceljs');
 const bodyParser = require('body-parser');
 const DatabaseManager = require('./databaseManager');
 // const fs = require('fs')
@@ -20,18 +21,18 @@ const pool = new Pool({
 
 
 const columns = [
-    { name: 'jan', type: 'INTEGER' },
-    { name: 'feb', type: 'INTEGER' },
-    { name: 'mar', type: 'INTEGER' },
-    { name: 'apr', type: 'INTEGER' },
-    { name: 'may', type: 'INTEGER' },
-    { name: 'jun', type: 'INTEGER' },
-    { name: 'jul', type: 'INTEGER' },
-    { name: 'aug', type: 'INTEGER' },
-    { name: 'sep', type: 'INTEGER' },
-    { name: 'oct', type: 'INTEGER' },
-    { name: 'nov', type: 'INTEGER' },
-    { name: 'dec', type: 'INTEGER' },
+    { name: 'jan', type: 'TINYINT' },
+    { name: 'feb', type: 'TINYINT' },
+    { name: 'mar', type: 'TINYINT' },
+    { name: 'apr', type: 'TINYINT' },
+    { name: 'may', type: 'TINYINT' },
+    { name: 'jun', type: 'TINYINT' },
+    { name: 'jul', type: 'TINYINT' },
+    { name: 'aug', type: 'TINYINT' },
+    { name: 'sep', type: 'TINYINT' },
+    { name: 'oct', type: 'TINYINT' },
+    { name: 'nov', type: 'TINYINT' },
+    { name: 'dec', type: 'TINYINT' },
 ]
 
 // Example list of user credentials
@@ -46,21 +47,55 @@ const users = [
 ];
 
 // Instantiate the DatabaseManager and connect workflow to database
-const databaseManager = new DatabaseManager(pool);
+const databaseManager = new DatabaseManager(pool, ExcelJS);
 
 // Utilization of functions
+newDatabase =           false;
+deleteDatabase =        false;
+newTable =              false;
+newTableColumn =        false;
+importExcel =           true;
+createUsers =           false;
+updateUsers =           false;
+hashUsersPasswords =    false;
+
 (async () => {
+    // Create new database
+    if (newDatabase) {
+        await databaseManager.setupDatabase('preliminarydatabase')
+    }
+
+    if (deleteDatabase) {
+        await DatabaseManager.dropDatabase(databaseName)
+    }
+    
     // Create a new table
-    await databaseManager.createTable('practice_table', columns);
+    if (newTable) {
+        await databaseManager.createTable('practice_table', columns);
+    }
+
+    if (newTableColumn) {
+        await databaseManager.addColumnToTable('year', 'SMALLINT')
+    }
 
     // Import Excel data
-    await databaseManager.importExcelData('data.xlsx', 'Sheet1');
+    if (importExcel) {
+        await databaseManager.importExcelData('SeriesReport.xlsx', 'BLS Data Series');
+    }
 
     // Create users table
-    await databaseManager.createUsersTable();
+    if (createUsers) {
+        await databaseManager.createUsersTable();
+    }
 
     // Update users table
-    await databaseManager.updateUsersTable(users);
+    if (updateUsers) {
+        await databaseManager.updateUsersTable(users);
+    }
+
+    if (hashUsersPasswords) {
+        await databaseManager.fetchAndHashAndUpdateUserPassword()
+    }
 
     // Example usage of other methods
     // await databaseManager.setupDatabase('new_database');
