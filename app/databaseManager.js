@@ -68,6 +68,38 @@ class DatabaseManager {
         }
     }
 
+    // Update users table, if it exists
+    async updateTableEntries(entries) {
+        const client = await this.pool.connect();
+        try {
+            await client.query('BEGIN');
+
+            for (const entry of entries) {
+                const { company, model_name, context, input, output, knowledge } = entry;
+                const query = {
+                    text: `
+                        INSERT INTO llm_models (company, model_name, context, input, output, knowledge)
+                        VALUES ($1, $2, $3, $4, $5, $6)
+                        ON CONFLICT (company, model_name) DO UPDATE SET  
+                        context = EXCLUDED.context,  
+                        input = EXCLUDED.input,  
+                        output = EXCLUDED.output,  
+                        knowledge = EXCLUDED.knowledge
+                    `,
+                    values: [company, model_name, context, input, output, knowledge],
+                };
+                await client.query(query);
+            }
+            await client.query('COMMIT');
+            console.log('Table entries were added successfully.');
+        } catch (error) {
+            await client.query('ROLLBACK');
+            console.error('Error adding entries to table:', error);
+        } finally {
+            client.release();
+        }
+    }
+
     /// User manipulation methods
     // Create users table, if not existent
     async createUsersTable() {

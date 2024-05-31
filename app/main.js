@@ -29,8 +29,9 @@ const databaseManager = new DatabaseManager(pool, ExcelJS);
 // Utilization of functions
 newDatabase =           false;
 deleteDatabase =        false;
-newTable =              true;
+newTable =              false;
 newTableColumn =        false;
+updateTableEntries =    true;
 importExcel =           false;
 createUsers =           false;
 updateUsers =           false;
@@ -48,12 +49,17 @@ hashUsersPasswords =    false;
     
     // Create a new table
     if (newTable) {
-        console.log(llm_models_dtype);
+        // utilize console log when troubleshooting errors
+        // console.log(llm_models_dtype);
         await databaseManager.createTable('llm_models', llm_models_dtype);
     }
 
     if (newTableColumn) {
         await databaseManager.addColumnToTable('year', 'SMALLINT')
+    }
+
+    if (updateTableEntries) {
+        await databaseManager.updateTableEntries(llm_models)
     }
 
     // Import Excel data
