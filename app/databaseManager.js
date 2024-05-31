@@ -43,6 +43,7 @@ class DatabaseManager {
         const client = await this.pool.connect();
         try {
             const columnDefs = columns.map(column => `"${column.name}" ${column.type}`).join(', ');
+            console.log(columnDefs);
             const queryString = `CREATE TABLE IF NOT EXISTS "${tableName}" (${columnDefs})`;
             await client.query(queryString);
             console.log(`Table "${tableName} created successfully.`);
