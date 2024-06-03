@@ -55,7 +55,7 @@ app.post('/login', async (req, res) => {
             const user = result.rows[0];
             if (await bcrypt.compare(password, user.password)) {
                 req.session.loggedIn = true;
-                res.redirect('/data');
+                res.redirect('/llm-data');
             } else {
                 res.send('Invalid username or password');
             }
@@ -67,6 +67,34 @@ app.post('/login', async (req, res) => {
         res.status(500).send('Internal server error');
     }
 });
+
+// establish data route
+app.get('/llm-data', async (req, res) => {
+    if (req.session.loggedIn) {
+        try {
+            const client = await pool.connect();
+            const result = await client.query(`SELECT * FROM llm_models`);
+            const rows = result.rows;
+            client.release();
+
+            // read html file
+            const htmlTemplate = fs.readFileSync('llm_index.html', 'utf8');
+            let tableRows = '';
+            rows.forEach(row => {
+                tableRows += `<tr><td>${row.company}</td><td>${row.model_name}</td><td>${row.context}</td><td>${row.input}</td><td>${row.output}</td><td>${row.knowledge}</td></tr>`;
+            });
+            // replace comment section in HTML file with data from database
+            const html = htmlTemplate.replace('<!-- Injected LLM model dataset here -->', tableRows);
+
+            res.send(html);
+        } catch (error) {
+            console.error('Error retrieving data:', error);
+            res.status(500).send('Internal server error');
+        }
+    } else {
+        res.redirect('/login');
+    }
+})
 
 // establish data route
 app.get('/data', async (req, res) => {

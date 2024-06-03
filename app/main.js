@@ -29,7 +29,7 @@ const databaseManager = new DatabaseManager(pool, ExcelJS);
 // Utilization of functions
 newDatabase =           false;
 deleteDatabase =        false;
-newTable =              false;
+newTable =              true;
 newTableColumn =        false;
 updateTableEntries =    true;
 importExcel =           false;
@@ -59,6 +59,7 @@ hashUsersPasswords =    false;
     }
 
     if (updateTableEntries) {
+        // console.log(llm_models);
         await databaseManager.updateTableEntries(llm_models)
     }
 
