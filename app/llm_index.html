@@ -5,9 +5,37 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
+    .page-title {
+        margin-top: 50px;
+        text-align: center;
+    }
+
     .table-title {
         margin-top: 50px;
         text-align: center;
+    }
+
+    .general-overview {
+        display: flex;
+        justify-content: center;
+        text-align: left;
+        margin: 0% 15%;
+    }
+
+    .table-cols-explained {
+        margin-top: 25px;
+        margin-left: 175px;
+    }
+
+    .context-title {
+        margin-top: 25px;
+        margin-left: 175px;
+    }
+    
+    .context-explained {
+        margin-top: 15px;
+        margin: 25px 175px 25px 0;
+        margin-left: 175px;
     }
 
 
@@ -24,7 +52,7 @@
     }
 
     .content-table thead tr {
-        background-color: #009879;
+        background-color: #003a96;
         color: #ffffff;
         text-align: left;
         font-weight: bold;
@@ -36,15 +64,15 @@
     }
 
     .content-table tbody tr {
-        border-bottom: thin solid #dddddd;
+        border-bottom: thin solid #f1f5fb;
     }
 
     .content-table tbody tr:nth-of-type(even) {
-        background-color: #f3f3f3;
+        background-color: #f1f5fb;
     }
 
     .content-table tbody tr:last-of-type {
-        border-bottom: 2px solid #009879;
+        border-bottom: 2px solid #003a96;
     }
 </style>
 
@@ -54,12 +82,15 @@
 </head>
 
 <body>
-    <h1>General Information for Currently available LLM Models</h1>
+    <!-- <h1 class="page-title">General LLM Model information for Commercially Available Models</h1> -->
     <h1 class="table-title">Commercially Available LLM Models</h1>
-    <h3>The following table provides you with general information on the LLM's that are currently available 
+    <h3 class="general-overview">The following table provides you with general information on the LLM's that are currently available 
         on the market, their context window size, input and output submission costs, and where applicable the 
         knowledge base date that the information is based off.</h3>
-        <p>The context or context window is the amount of information that's taken as an input for a query by
+    <h2 class="table-cols-explained">LLM Models Table Explained</h2>
+    
+        <h3 class="context-title">Context Window</h3>
+        <p class="context-explained">The context or context window is the amount of information that's taken as an input for a query by
             the user. The length of the context window is based on token length. Each token is equivalent to four
             characters or 3/4 of a word in English, with 100 words being equivalent to 75 words.
             

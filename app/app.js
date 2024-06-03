@@ -8,6 +8,8 @@ const bcrypt = require('bcrypt');
 const { Pool } = require('pg');
 const fs = require('fs')
 require('dotenv').config();
+const { format } = require('date-fns');
+
 
 const app = express();
 const port = 3000;
@@ -79,10 +81,12 @@ app.get('/llm-data', async (req, res) => {
 
             // read html file
             const htmlTemplate = fs.readFileSync('llm_index.html', 'utf8');
-            let tableRows = '';
-            rows.forEach(row => {
-                tableRows += `<tr><td>${row.company}</td><td>${row.model_name}</td><td>${row.context}</td><td>${row.input}</td><td>${row.output}</td><td>${row.knowledge}</td></tr>`;
-            });
+            let tableRows = '';  
+            rows.forEach(row => {  
+                // Format knowledge to 'YYYYMM' if it exists, otherwise show an empty string  
+                let formattedKnowledge = row.knowledge ? format(row.knowledge, 'MM-yyyy') : '';  
+                tableRows += `<tr><td>${row.company}</td><td>${row.model_name}</td><td>${row.context}</td><td>${row.input}</td><td>${row.output}</td><td>${formattedKnowledge}</td></tr>`;  
+            });  
             // replace comment section in HTML file with data from database
             const html = htmlTemplate.replace('<!-- Injected LLM model dataset here -->', tableRows);
 
