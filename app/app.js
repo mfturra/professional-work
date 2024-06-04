@@ -50,7 +50,9 @@ app.post('/login', async (req, res) => {
     try {
         // connect to database and store table values in variables
         const client = await pool.connect();
+        // console.log(`Searching for user: ${username}`)
         const result = await client.query(`SELECT * FROM users WHERE username = $1`, [username]);
+        // console.log(result.rows);
         client.release();
 
         if (result.rows.length > 0) {
