@@ -18,10 +18,6 @@ const pool = new Pool({
     port: process.env.DB_PORT,
 })
 
-// const hostname = '127.0.0.1';
-// const port = 3000;
-
-
 
 // Instantiate the DatabaseManager and connect workflow to database
 const databaseManager = new DatabaseManager(pool, ExcelJS);

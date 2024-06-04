@@ -14,114 +14,111 @@
         box-sizing: border-box;
     }
 
-    body {
-        background-color: #f1f5fb;
-    }
-
     .container {
-        /* width: 100%; */
+        width: 100%;
         display: flex;
         justify-content: center;
         align-items: center;
-        
-        /* min-height: 20vh; */
-        /* text-align: center; */
-    }
-
-    .login-header {
-        position: relative;
-        /* margin-top: 100px; */
-        /* left: 50%; */
-        /* transform: translateX(-50%); */
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        /* background-color: rgb(198, 226, 250); */
-        padding: 2em 0 1em 0;
-        margin-top: 20px;
-        font-size: x-large;
+        min-height: 80vh;
+        text-align: center;
     }
 
     .login-box {
         position: relative;
         width: 450px;
-        background-color: #ffffff;
-        padding: 0.5em 0 1.5em 0;
-        border-radius: 15px;
+        border: thin solid #003a96;
+        background-color: #b1e4e3;
+        /*#ffffff;*/
+        padding: 3.5em 2.5em 4em 2.5em;
+        border-radius: 5px;
         /* overflow: hidden; */
         box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    .login-header {
+        position: absolute;
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        /* background-color: rgb(198, 226, 250); */
+        padding: 5em 0.5em 1em 0.5em;
+        margin-top: 20px;
+        font-size: x-large;
     }
 
     .input-box {
         position: relative;
         display: flex;
         flex-direction: column;
+        margin: 10px 0;
         width: 100%;
+        /* display: flex;
         justify-content: center;
-        align-items: center;
+        align-items: center; */
     }
 
     .input-field {
-        border: none;
-        border-bottom: 3px solid #009ca6;
-        background: none;
-        padding-left: 10px;
-        width: 70%;
+        width: 100%;
         height: 55px;
         font-size: 16px;
+        /* background-color: #ffffff; */
+        background-color: #ffffff;
+        border: thin solid #003a96;
         margin-top: 10px;
-        /* border-radius: 8px; */
+        border-radius: 8px;
+        text-align: center;
     }
 
     #username {
-        margin-bottom: 5px;
+        margin-bottom: 10px;
     }
 
     #password {
         margin-bottom: 30px;
     }
 
+    .label {
+        position: absolute;
+        top: 30px;
+        left: 20px;
+        transition: .2s;
+    }
+
+    .input-field:focus~.label,
+    .input-field:valid~.label {
+        position: absolute;
+        top: -10px;
+        left: 20px;
+        font-size: 14px;
+    }
+
     .input-submit {
-        margin-top: 5px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border: none;
+        margin-top: 15px;
+        position: absolute;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 25%;
         height: 50px;
-        width: 100px;
-        margin: auto;
-        /* transform: translate(120%, -10%); */
-        color: #ffffff;
-        background-color: #009ca6;
-        /* border: thin solid #003a96; */
+        background-color: #ffffff;
+        border: thin solid #003a96;
         border-radius: 8px;
+        /* border: #03201b; */
     }
-
-    .input-field:active,
-    .input-field:focus,
-    .input-field:hover {
-        outline: none;
-        border-bottom-color: #003a96;
-    }
-
-    .input-submit:hover {
-        /* outline: none; */
-        /* background-color: #003a96; */
-        border-bottom: 4px solid #003a96;
-    }
-
 </style>
 
 <body>
-    <div class="login-header">
-        <span>LLM Models Insight</span>
-    </div>
     <div class="container">
-        
+        <div class="login-header">
+            <span>Data Processing Form</span>
+        </div>
         <div class="login-box">
             <form action="/login" method="post">
                 <div class="input-box">
                     <!-- <label for="username" class="label">Username</label> -->
+                    <i class="login__icon fas fa-user"></i>
                     <input type="text" id="username" class="input-field" placeholder="User name" required>
                     <!-- placeholder="Username" -->
                 </div>
@@ -129,7 +126,7 @@
                     <!-- <label for="password" class="label">Password</label> -->
                     <input type="password" id="password" class="input-field" placeholder="Password" required>
                 </div>
-                <div class="button-submit">
+                <div class="input-box">
                     <button type="submit" class="input-submit" value="Login">Login</button>
                 </div>
             </form>
