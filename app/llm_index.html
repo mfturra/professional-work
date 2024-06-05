@@ -68,6 +68,33 @@
         margin-left: 175px;
     }
 
+    .input-output-title {
+        margin-top: 25px;
+        margin-left: 175px;
+    }
+    
+    .input-explained {
+        margin-top: 15px;
+        margin: 25px 175px 25px 0;
+        margin-left: 175px;
+    }
+    
+    .output-explained {
+        margin-top: 15px;
+        margin: 25px 175px 25px 0;
+        margin-left: 175px;
+    }
+
+    .knowledge-date-title {
+        margin-top: 25px;
+        margin-left: 175px;
+    }
+
+    .knowledge-date-explained {
+        margin-top: 15px;
+        margin: 25px 175px 25px 0;
+        margin-left: 175px;
+    }
 
     .content-table {
         border-collapse: collapse;
@@ -104,6 +131,12 @@
     .content-table tbody tr:last-of-type {
         border-bottom: 2px solid #003a96;
     }
+
+    .last-updated {
+        margin-top: 15px;
+        margin: 25px 175px 25px 0;
+        margin-left: 175px;
+    }
 </style>
 
 
@@ -114,9 +147,9 @@
 <body>
     <!-- <h1 class="page-title">General LLM Model information for Commercially Available Models</h1> -->
     <h1 class="table-title">Commercially Available LLM Models</h1>
-    <h3 class="general-overview">The following table provides you with general information on the LLM's that are currently available 
-        on the market, their context window size, input and output submission costs, and where applicable the 
-        knowledge base date that the information is based off.</h3>
+    <h3 class="general-overview">The following table provides you with general information on the LLM's that are currently commercially 
+        available on the market, their context window size, input and output token costs, and where applicable the 
+        knowledge base date that the model's information is based on.</h3>
     <hr/>
     <h2 class="table-cols-explained">LLM Models Table Explained</h2>
     
@@ -129,21 +162,40 @@
             which results in faster input generation.
         </p>
 
+        <h3 class="input-output-title">Input (Prompt Pricing) & Output (Completion Pricing)</h3>
+        <p class="input-explained">The LLM models seen below have varying prices and are calculated based on the number of tokens that are
+            used to process the request. The prices are usually based per million tokens (1MTok). The input tokens are the number of tokens used
+            to process the input that the user is giving the LLM model via an input prompt. 
+
+        <!-- <br>
+            Meanwhile, the output tokens are calculated based on the number of tokens needed to generate the response that 
+            was requested by the user. The cost for using an LLM is therefore calculated based on the total number of input and output tokens used.
+        </p> -->
+        <p class="output-explained">Meanwhile, the output tokens are calculated based on the number of tokens needed to generate the response that 
+            was requested by the user. The cost for using an LLM is therefore calculated based on the total number of input and output tokens used.
+        </p>
+
+        <h3 class="knowledge-date-title">Knowledge Base Date</h3>
+        <p class="knowledge-date-explained">The knowledge base date outlines the date at which the training data for the model was gathered and trained on.
+            After the date, the model wouldn't be aware of any information or events that took place unless it's updated or retrained on the newer data.
+        </p>
     <table class="content-table">
         <thead>
             <tr>
                 <th>Company</th>
                 <th>Model Name</th>
                 <th>Context</th>
-                <th>Input ($/1M)</th>
-                <th>Output ($/1M)</th>
-                <th>Knowledge Base</th>
+                <th>Input ($/1M Tokens)</th>
+                <th>Output ($/1M Tokens)</th>
+                <th>Knowledge Base Date</th>
             </tr>
         </thead>
         <tbody>
             <!-- Injected LLM model dataset here -->
         </tbody>
     </table>
+
+    <p class="last-updated">Last updated: June 5th, 2024</p>
 </body>
 
 </html>
