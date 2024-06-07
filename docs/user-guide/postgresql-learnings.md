@@ -9,9 +9,20 @@
 3. Type `psql` in the Windows search bar.
 4. When prompted, enter your username and password. After entering your credentials, the terminal command line will change to `postgres=>`.
 
+### Pipeline creation
+Order of workflows that were created.
+1. Create new database for specific user credentials.
+2. Delete specific database using database name.
+3. Create structured table inside database based on specific column types.
+4. Ingest excel data into databases' table.
+5. Upload data onto HTML page and customize table to make it easily understood.
+6. Create login page that requires credentials from user before accessing data.
+    - Create postgresql user specifically to handle datasets.
+
 ## SQL Shortcuts
-List all the available databases in the sql server: `\l`
-Connect to specific database: `\connect databasename`
-List all tables available inside the database: `\dt`
-Select all content contained inside a specific table: `SELECT * FROM tablename;`
-Add column to table: `ALTER TABLE tablename ADD COLUMN columnname columntype;`
+- Login to PostgreSQL: `psql postgres`
+- List all the available databases in the sql server: `\l`
+- Connect to specific database: `\connect dbname`
+- List all tables available inside the database: `\dt`
+- Select all content contained inside a specific table: `SELECT * FROM tablename;`
+- Add column to table: `ALTER TABLE tablename ADD COLUMN columnname columntype;`
