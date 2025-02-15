@@ -3,7 +3,7 @@ const express = require('express');
 const ExcelJS = require('exceljs');
 const bodyParser = require('body-parser');
 const DatabaseManager = require('./databaseManager');
-const { llm_models_dtype, llm_models } = require('./table_creator');
+const { llm_models_dtype, llm_models, users } = require('./table_creator');
 
 // const fs = require('fs')
 require('dotenv').config();
@@ -25,9 +25,9 @@ const databaseManager = new DatabaseManager(pool, ExcelJS);
 // Utilization of functions
 newDatabase =           false;
 deleteDatabase =        false;
-newTable =              true;
+newTable =              false;
 newTableColumn =        false;
-updateTableEntries =    true;
+updateTableEntries =    false;
 importExcel =           false;
 createUsers =           false;
 updateUsers =           false;

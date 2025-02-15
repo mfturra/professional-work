@@ -64,3 +64,4 @@ const llm_models = [
 
 module.exports.llm_models_dtype = llm_models_dtype;
 module.exports.llm_models = llm_models;
+module.exports.users = users;
